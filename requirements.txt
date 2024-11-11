@@ -1,0 +1,6 @@
+asyncio
+python-socketio
+aiohttp
+numpy
+h5py
+matplotlib
