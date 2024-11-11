@@ -242,6 +242,6 @@ class LiveMEA:
 
 # Example usage
 if __name__ == "__main__":
-    live_mea = LiveMEA(recording_duration=1, save_path="live_data.h5")
+    live_mea = LiveMEA(recording_duration=10, save_path="live_data.h5")
     data = live_mea.record()
     LiveMEA.plot_data("live_data.h5")
