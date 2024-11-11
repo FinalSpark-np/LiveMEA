@@ -1,6 +1,6 @@
 # LiveMEA
 
-This project allows you to record live data from the LiveMEA service and save it to an HDF5 file. It provides both an API and a CLI for ease of use.
+This project allows you to record live data from the [FinalSpark LiveMEA service](https://livemea.finalspark.com/live) and save it to an HDF5 file. It provides both an API and a CLI for ease of use.
 
 ## Data specification
 
