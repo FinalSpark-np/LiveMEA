@@ -7,3 +7,4 @@ This project allows you to record live data from the [FinalSpark LiveMEA service
 The documentation is available [here](https://finalspark-np.github.io/np-docs/np_utils/livemea.html).
 
 ---
+<iframe src="https://livemea.finalspark.com/live" width="100%" height="500px"></iframe>
