@@ -160,9 +160,9 @@ class LiveMEA:
                     grp.create_dataset(elec, data=data)
             print("Data saved to live_data.h5")
 
-    async def _record_live_data(self, duration):
+    async def record_async(self):
         try:
-            await self._start_async_loop(duration)
+            await self._start_async_loop(self.duration)
         except asyncio.TimeoutError:
             raise
         except asyncio.CancelledError:
@@ -192,7 +192,7 @@ class LiveMEA:
         if save_path:
             self.save_path = save_path
         try:
-            return asyncio.run(self._record_live_data(self.duration))
+            return asyncio.run(self.record_async(self.duration))
         except Exception as e:
             print(f"An error occurred: {e}")
 
