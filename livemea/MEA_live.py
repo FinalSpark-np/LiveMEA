@@ -52,13 +52,14 @@ class LiveMEA:
         path = Path(path)
         self._save_path = path if path.suffix == ".h5" else path.with_suffix(".h5")
 
-        if path.exists():
+        if self.save_path.exists():
             raise FileExistsError(
                 f"{path} already exists and would be overwritten by new data. Please choose a different path."
             )
 
-        if not path.parent.exists():
-            path.parent.mkdir(parents=True, exist_ok=True)
+        if not self.save_path.parent.exists():
+            print("Created parent directories")
+            self.save_path.parent.mkdir(parents=True, exist_ok=True)
 
     @property
     def duration(self):
@@ -107,7 +108,7 @@ class LiveMEA:
                     status += " - Offline"
                     raise Exception("LiveMEA service is offline")
                 print(f"Status - {status}")
-                print("Default MEA:", default_mea[-2])
+                print(f"Default MEA: {int(default_mea[-2]) + 1}")
 
         except asyncio.CancelledError:
             print("fetch_all_http_data was cancelled")
@@ -127,6 +128,11 @@ class LiveMEA:
 
         await self.sio.connect(self.SERVER_URL)
         await self.sio.emit("meaid", self.mea_id - 1)
+        # once we choose the MEA,
+        # we start listening to the livedata event
+        # since the above event hook runs automatically;
+        # all we have to do is wait for the queue 
+        # to receive the specified amount of data
         try:
             while self.queue.qsize() < self.duration:
                 # res = await self.sio.wait()
@@ -192,7 +198,7 @@ class LiveMEA:
         if save_path:
             self.save_path = save_path
         try:
-            return asyncio.run(self.record_async(self.duration))
+            return asyncio.run(self.record_async())
         except Exception as e:
             print(f"An error occurred: {e}")
 
