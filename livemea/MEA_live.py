@@ -13,7 +13,7 @@ class LiveMEA:
     DEFAULT_DURATION = 5
 
     def __init__(
-        self, save_path: str | Path, recording_duration: int = 5, mea_id: int = 0
+        self, save_path: str | Path, recording_duration: int = 5, mea_id: int = 1
     ):
         """This class lets you obtain live data from the LiveMEA service and save it to an HDF5 file.
 
@@ -22,7 +22,7 @@ class LiveMEA:
         Args:
             recording_duration (int, optional): Duration of recording in seconds. Defaults to 5.
             save_path (str, optional): Path to save the HDF5 file. Defaults to "live_data.h5".
-            mea_id (int, optional): MEA ID to use. Defaults to 0, must be between 0 and 3.
+            mea_id (int, optional): MEA ID to use. Defaults to 1, must be between 1 and 4.
 
         Attributes:
             save_path (Path): Path to save the HDF5 file.
@@ -34,7 +34,7 @@ class LiveMEA:
         """
         self._save_path = None
         self._duration = None
-        self._meaid = mea_id
+        self._meaid = None
         ###
         self.sio = socketio.AsyncClient()
         self.queue = asyncio.Queue(maxsize=self.MAX_QUEUE_SIZE)
@@ -78,8 +78,8 @@ class LiveMEA:
     def mea_id(self, meaid):
         if not isinstance(meaid, int):
             raise ValueError("MEA ID must be an integer")
-        if meaid not in range(0, 4):
-            raise ValueError("MEA ID must be in the range 0-3")
+        if meaid not in range(1, 5):
+            raise ValueError("MEA ID must be in the range 1-4")
         self._meaid = meaid
 
     async def _fetch_http_data(self, session, endpoint):
@@ -126,7 +126,7 @@ class LiveMEA:
             print(f"{self.queue.qsize()} / {int(self.duration)}", end="\r")
 
         await self.sio.connect(self.SERVER_URL)
-        await self.sio.emit("meaid", self.mea_id)
+        await self.sio.emit("meaid", self.mea_id - 1)
         try:
             while self.queue.qsize() < self.duration:
                 # res = await self.sio.wait()
@@ -197,14 +197,14 @@ class LiveMEA:
             print(f"An error occurred: {e}")
 
     @classmethod
-    def quick_record(cls, save_path: str, duration: int = 5, mea_id: int = 0):
+    def quick_record(cls, save_path: str, duration: int = 5, mea_id: int = 1):
         """
         Quick method to record live data and save it to an HDF5 file.
 
         Args:
             save_path (str): Path to save the HDF5 file.
             duration (int, optional): Duration of recording in seconds. Defaults to 5.
-            mea_id (int, optional): MEA ID to use. Defaults to 0, must be between 0 and 3.
+            mea_id (int, optional): MEA ID to use. Defaults to 1, must be between 1 and 4.
 
         Returns:
             LiveMEA: Instance of LiveMEA class.

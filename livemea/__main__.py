@@ -22,7 +22,7 @@ def main():
         help="Path to save the recorded data",
     )
     parser.add_argument(
-        "-m", "--MEA", type=int, default=0, help="MEA ID to record data from"
+        "-m", "--MEA", type=int, default=1, help="MEA ID to record data from"
     )
     args = parser.parse_args()
     LiveMEA.quick_record(args.path, args.duration, args.MEA)
